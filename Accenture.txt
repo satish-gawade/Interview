@@ -1,0 +1,13 @@
+Intro
+What is Oops
+all Oops pillars
+Solid Principles
+Authentication 
+MVC 
+what is Delegates
+diff bet Interface and Abstract class
+ViewBag and TempData
+Const and ReadOnly
+ 
+Primary key and Foreign key
+which join return more null values

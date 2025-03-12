@@ -1,0 +1,19 @@
+Dependency Injection
+Collections
+Dictionary
+IEnumerable
+LINQ
+Life time of an object (singleton, transition, scoped)
+logging
+Exception handling
+
+diff between Primary key and Foreign key
+Different joins
+different between View and Temp table
+Sub Query
+
+What is your current project is doing
+Which task have you struggle the most
+
+
+ 
