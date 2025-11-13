@@ -1,0 +1,1142 @@
+What is Middleware in .NET Core? Can we create custom middleware?
+Middleware is a component that processes requests and responses in the ASP.NET Core pipeline.
+Each middleware can perform operations before and after the next one runs.
+For example, we use built-in middleware like authentication, routing, and exception handling.
+
+
+
+Yes, we can create custom middleware. In one of my projects, I created a custom middleware for centralized error logging and response formatting.
+
+app.Use(async (context, next) =>
+{
+    try { await next(); }
+    catch (Exception ex) { await context.Response.WriteAsync("Error occurred."); }
+});
+
+
+This helped maintain cleaner, centralized exception handling across APIs.
+
+2?? What are the four pillars of OOP?
+
+The four pillars are Encapsulation, Inheritance, Polymorphism, and Abstraction.
+
+Encapsulation: Wrapping data and code together - e.g., using private fields with public getters/setters.
+
+Inheritance: Reusing code by deriving one class from another.
+
+Polymorphism: Using the same method name but different behaviors (overloading/overriding).
+
+Abstraction: Hiding complexity - using abstract classes or interfaces to show only necessary details.
+
+3?? Difference between Abstract Class and Interface
+
+Abstract Class can have both implemented and abstract methods.
+
+Interface can only have declarations (though from C# 8+, default methods are allowed).
+
+A class can inherit only one abstract class, but multiple interfaces.
+
+Example:
+
+abstract class Shape { public abstract void Draw(); }
+interface IColor { void Fill(); }
+
+4?? What is the SOLID principle?
+
+SOLID is a set of five design principles for writing clean, maintainable, and scalable code:
+
+S - Single Responsibility
+
+O - Open/Closed
+
+L - Liskov Substitution
+
+I - Interface Segregation
+
+D - Dependency Inversion
+
+I follow these in every project, especially SRP and DI, to reduce coupling and make code easier to test.
+
+5?? What is Dependency Injection?
+
+Dependency Injection (DI) is a design pattern that allows a class to receive its dependencies from external sources rather than creating them internally.
+It makes code modular and testable.
+
+Example: instead of creating a new object inside a controller, I inject it through the constructor:
+
+public class PatientController
+{
+    private readonly IPatientService _service;
+    public PatientController(IPatientService service) => _service = service;
+}
+
+
+In .NET Core, DI is built-in through the Startup.cs file using services.AddScoped<>().
+
+6?? Difference between .NET Framework and .NET Core
+
+.NET Framework is Windows-only and older.
+
+.NET Core is cross-platform, faster, open-source, and suitable for cloud apps.
+
+.NET Core introduced features like middleware, dependency injection, and self-contained deployment.
+
+7?? Why do we use the using keyword in C#?
+
+The using keyword automatically disposes unmanaged resources like file handles, streams, or database connections.
+It ensures the Dispose() method is called even if an exception occurs.
+
+using (var conn = new SqlConnection("...")) { conn.Open(); }
+
+
+Once the block ends, the connection is released automatically.
+
+8?? Why do we use Delegates in C#?
+
+Delegates are type-safe function pointers that allow methods to be passed as parameters.
+They are useful in implementing callbacks and event handling.
+
+Example:
+
+public delegate void Notify(string message);
+public void SendNotification(Notify notify) => notify("Hello!");
+
+
+Delegates are the base for Events and Lambdas in C#.
+
+9?? Difference between Value Type and Reference Type
+
+Value Types store data directly in the stack (e.g., int, bool, struct).
+
+Reference Types store references to data in the heap (e.g., class, array, string).
+
+Value types hold their own copy, while reference types point to the same object.
+
+?? What is Authentication and Authorization?
+
+Authentication verifies who the user is (like login).
+
+Authorization checks what the user can access (like admin permissions).
+
+Example: In an API, authentication uses JWT tokens, while authorization checks roles like [Authorize(Roles="Admin")].
+
+11?? What is JWT Token-based Authentication? What do we store in a JWT token?
+
+JWT (JSON Web Token) is a secure way to authenticate users in stateless APIs.
+It contains three parts - Header, Payload, and Signature.
+
+The payload stores user data like UserId, Role, and Expiry.
+The token is signed and sent with every request in the Authorization header.
+The server validates it without storing any session data - making it scalable.
+
+12?? What is a Constructor and its types?
+
+A constructor is a special method used to initialize objects.
+It has the same name as the class and no return type.
+
+Types:
+
+Default Constructor - no parameters.
+
+Parameterized Constructor - accepts arguments.
+
+Static Constructor - used to initialize static data.
+
+Copy Constructor - copies data from another object (not common in C#, but possible).
+
+13?? What is Inheritance and its types?
+
+Inheritance allows one class to derive from another, reusing its code.
+
+Types:
+
+Single Inheritance
+
+Multilevel Inheritance
+
+Hierarchical Inheritance
+
+Multiple Inheritance (via Interfaces)
+
+Example:
+
+class A { public void Display(){} }
+class B : A { }
+
+
+Here, B inherits from A.
+
+14?? Difference between Function Overloading and Function Overriding
+
+Overloading: Same method name but different parameters, in the same class. (Compile-time polymorphism)
+
+Overriding: Same method name and parameters but defined in derived class using virtual and override keywords. (Run-time polymorphism)
+
+15?? What is Serialization and Deserialization?
+
+Serialization converts an object into a format (like JSON or XML) for storage or transfer.
+
+Deserialization converts that data back into an object.
+
+Example using JSON:
+
+var json = JsonConvert.SerializeObject(obj);
+var obj2 = JsonConvert.DeserializeObject<MyClass>(json);
+
+
+It's widely used in APIs to send and receive data.
+
+16?? What is Asynchronous Programming in C#?
+
+Asynchronous programming allows tasks to run in the background without blocking the main thread.
+
+We use async and await keywords to write non-blocking code.
+
+Example:
+
+public async Task GetDataAsync()
+{
+    var data = await _httpClient.GetAsync("api/data");
+}
+
+
+It improves performance, especially in API calls or I/O operations.
+
+17?? What are Access Specifiers in C#?
+
+Access specifiers define the visibility of classes and members.
+
+Public - accessible everywhere.
+
+Private - accessible only within the same class.
+
+Protected - within class and derived classes.
+
+Internal - within the same assembly.
+
+Protected Internal - combination of both.
+
+18?? Why do we use ref, out, and in keywords?
+
+ref passes an argument by reference (requires initialization).
+
+out also passes by reference but doesn't need to be initialized - it must be assigned inside the method.
+
+in passes by reference but makes the parameter read-only.
+
+Example:
+
+void Calculate(ref int a, out int b, in int c) { ... }
+
+19?? Difference between IEnumerable and IQueryable
+
+IEnumerable executes queries in-memory (client-side) and is best for small datasets.
+
+IQueryable executes queries in the database (server-side) and supports deferred execution.
+
+Example:
+
+IEnumerable<Student> data = context.Students.ToList();
+IQueryable<Student> query = context.Students.Where(s => s.Age > 20);
+
+
+IQueryable is preferred in EF Core for performance.
+
+20?? What are Design Patterns in .NET?
+
+Design Patterns are proven solutions to common software problems.
+
+Common types include:
+
+Creational: Singleton, Factory
+
+Structural: Adapter, Repository
+
+Behavioral: Observer, Strategy
+
+Example: In one project, I used the Repository Pattern to separate database logic from business logic, improving testability and maintainability.
+
+
+21?? What is Routing in ASP.NET Core?
+
+Routing in ASP.NET Core is the process of mapping incoming HTTP requests to specific controller actions.
+It defines how URLs are handled by the app.
+
+For example:
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+When a user hits /Patient/Details/1, it maps to PatientController ? Details(int id).
+
+Routing helps in creating clean, RESTful APIs, and we can also use attribute routing like [HttpGet("api/patient/{id}")].
+
+22?? How to handle Global Exceptions in .NET Core?
+
+In .NET Core, we can handle exceptions globally instead of writing try-catch everywhere.
+I usually do this in two ways:
+
+Using Exception Handling Middleware - I create a custom middleware that catches all exceptions and logs them.
+
+Using UseExceptionHandler() - built-in middleware for handling exceptions in production.
+
+Example:
+
+app.UseExceptionHandler("/error");
+
+
+Or create custom middleware:
+
+public async Task Invoke(HttpContext context) {
+  try { await _next(context); }
+  catch (Exception ex) { /* log error */ }
+}
+
+
+In one of my projects, I combined this with Azure Application Insights to track exceptions live - it made debugging production issues much faster.
+
+23?? Difference between PUT and PATCH in Web API
+
+Both are used to update data, but there's a key difference:
+
+PUT replaces the entire object.
+
+PATCH updates only specific fields.
+
+Example:
+
+PUT: If I send only Name, other properties might become null.
+
+PATCH: I can update just Name without affecting other fields.
+
+In APIs, PATCH is preferred for partial updates to improve efficiency and reduce payload size.
+
+24?? How to implement Versioning in Web API?
+
+Versioning allows APIs to evolve without breaking existing clients.
+
+In .NET Core, I use Microsoft.AspNetCore.Mvc.Versioning package.
+
+Then configure in Startup.cs:
+
+services.AddApiVersioning(v =>
+{
+    v.DefaultApiVersion = new ApiVersion(1, 0);
+    v.AssumeDefaultVersionWhenUnspecified = true;
+});
+
+
+And in controller:
+
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
+
+
+This way, I can have multiple versions like v1 and v2 running simultaneously - ensuring backward compatibility.
+
+25?? What is DTO (Data Transfer Object), and why use it?
+
+DTO stands for Data Transfer Object - it's a simple class used to transfer data between layers (like from API to UI) without exposing the actual entity model.
+
+It helps improve security, performance, and separation of concerns.
+
+Example:
+
+public class PatientDTO {
+    public string Name { get; set; }
+    public string Email { get; set; }
+}
+
+
+I use DTOs especially when I don't want to expose internal database fields like PasswordHash or CreatedBy to the client.
+
+26?? What is appsettings.json file in .NET Core?
+
+The appsettings.json file is used to store configuration data like connection strings, API keys, and environment-specific settings.
+It replaces the old web.config from .NET Framework.
+
+Example:
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=HospitalDB;Trusted_Connection=True;"
+  }
+}
+
+
+I can inject these values using IConfiguration in my services or controllers.
+Also, .NET Core supports environment-specific files like appsettings.Development.json.
+
+27?? What is DbContext and why do we use it?
+
+DbContext is the main class in Entity Framework Core that manages database operations - like querying, saving, and tracking changes.
+It acts as a bridge between your domain classes and the database.
+
+Example:
+
+public class HospitalDbContext : DbContext
+{
+    public DbSet<Patient> Patients { get; set; }
+}
+
+
+When I call context.SaveChanges(), EF Core automatically generates SQL commands.
+It simplifies data access and lets us use LINQ-to-Entities for database queries.
+
+28?? What is Kestrel vs IIS in .NET Core hosting?
+
+Kestrel is the built-in, cross-platform web server for .NET Core.
+IIS is a Windows web server traditionally used for hosting web apps.
+
+In ASP.NET Core, Kestrel runs the app internally, and IIS can act as a reverse proxy - forwarding external requests to Kestrel.
+
+Kestrel is lightweight, fast, and works cross-platform.
+
+IIS provides advanced features like process management, security, and load balancing (on Windows).
+
+Example:
+
+On Windows, we host via IIS + Kestrel.
+
+On Linux, we host directly with Kestrel + Nginx.
+
+29?? What is an Access Token, and how is it used in securing .NET Core apps?
+
+An Access Token is a credential (often a JWT) used to prove the identity of a user or application when accessing protected resources like APIs.
+
+After login, the authentication server issues the token, which the client includes in the Authorization header:
+
+Authorization: Bearer <token>
+
+
+In .NET Core, I use JWT Bearer Authentication middleware to validate these tokens.
+
+The token stores info like UserId, Email, Role, and Expiry.
+If the token is valid and not expired, the user can access protected endpoints - otherwise, a 401 Unauthorized is returned.
+
+This helps achieve stateless and scalable authentication, especially for microservice or Angular-based apps.
+
+
+30?? How does .NET Core handle Logging and Monitoring?
+
+In .NET Core, logging and monitoring are built into the framework - it's part of the Microsoft.Extensions.Logging library.
+
+We can log information at different levels like:
+
+Trace, Debug, Information, Warning, Error, and Critical.
+
+Example:
+
+private readonly ILogger<HomeController> _logger;
+
+public HomeController(ILogger<HomeController> logger)
+{
+    _logger = logger;
+}
+
+public IActionResult Index()
+{
+    _logger.LogInformation("Index page visited at {time}", DateTime.Now);
+    return View();
+}
+
+
+Logging providers can be plugged in easily - Console, Debug, File, Application Insights, Seq, or Serilog.
+
+For monitoring, I typically integrate:
+
+Application Insights (Azure) ? for real-time performance and telemetry.
+
+Health Checks Middleware ? using app.UseHealthChecks("/health") to monitor app and database health.
+
+Example of Health Check:
+
+services.AddHealthChecks()
+    .AddSqlServer(Configuration["ConnectionStrings:DefaultConnection"]);
+
+
+So in summary - logging helps in diagnosing issues, and monitoring ensures the app's health and stability in production.
+
+? Impact Tip:
+Add - "In my last project, I configured centralized logging with Serilog + Application Insights, so we could track API failures and performance bottlenecks directly from Azure Portal dashboards."
+
+31?? What is CQRS pattern, and when should it be used?
+
+CQRS stands for Command Query Responsibility Segregation.
+It's an architectural pattern where we separate the read and write operations into different models.
+
+Command ? modifies data (Create, Update, Delete).
+
+Query ? reads data (Get operations).
+
+Example:
+
+// Command: CreatePatientCommand
+public class CreatePatientCommand : IRequest<bool>
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+// Query: GetPatientByIdQuery
+public class GetPatientByIdQuery : IRequest<PatientDTO>
+{
+    public int Id { get; set; }
+}
+
+
+I usually implement CQRS using MediatR library - it helps decouple business logic and improve maintainability.
+
+? When to use CQRS:
+
+When the system has complex business logic or high read/write traffic.
+
+When we want to scale reads and writes separately.
+
+When we want to maintain clean separation between domain logic and data access.
+
+?? When not to use:
+
+For small applications, where it adds unnecessary complexity.
+
+Example (real-world):
+In our hospital management system, we used CQRS for patient registration -
+all write operations (registration, discharge) went through Commands,
+and read operations (reports, patient list) went through Queries for faster performance.
+
+32?? What are Joins in SQL? Explain Inner Join, Full Join, and Self Join.
+
+Answer:
+Joins in SQL are used to combine rows from two or more tables based on a related column.
+
+Inner Join: Returns records that have matching values in both tables.
+
+SELECT e.Name, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentId = d.Id;
+
+
+Full Join: Returns all records when there is a match in either table.
+
+SELECT e.Name, d.DepartmentName
+FROM Employees e
+FULL JOIN Departments d ON e.DepartmentId = d.Id;
+
+
+Self Join: A table joins itself, useful for hierarchical data.
+
+SELECT e1.Name AS Employee, e2.Name AS Manager
+FROM Employees e1
+JOIN Employees e2 ON e1.ManagerId = e2.Id;
+
+33?? What are the types of Joins?
+
+Answer:
+
+INNER JOIN - Returns only matching rows.
+
+LEFT JOIN - All rows from left + matching from right.
+
+RIGHT JOIN - All rows from right + matching from left.
+
+FULL OUTER JOIN - All rows from both, with NULLs for non-matches.
+
+CROSS JOIN - Cartesian product of both tables.
+
+SELF JOIN - Table joined with itself.
+
+34?? Difference between WHERE vs HAVING
+
+Answer:
+
+WHERE filters rows before grouping (on raw data).
+
+HAVING filters rows after GROUP BY (on aggregated data).
+
+SELECT Department, COUNT(*) 
+FROM Employees
+GROUP BY Department
+HAVING COUNT(*) > 5;
+
+35?? What are Indexes and Constraints in SQL?
+
+Answer:
+
+Indexes improve query performance by speeding up data retrieval.
+
+Constraints enforce data integrity (like rules on columns).
+
+Examples:
+
+Primary Key, Foreign Key, Unique, Check, Default, Not Null.
+
+Index example:
+
+CREATE INDEX idx_emp_name ON Employees(Name);
+
+36?? Difference between Primary Key and Unique Key
+Feature	Primary Key	Unique Key
+Nulls	Not allowed	Allowed once
+Table	Only one per table	Can have many
+Purpose	Uniquely identifies a row	Enforces uniqueness
+37?? What are Stored Procedures?
+
+Answer:
+A Stored Procedure is a precompiled SQL block stored in the database for reuse.
+
+CREATE PROCEDURE GetEmployeeById @Id INT
+AS
+BEGIN
+    SELECT * FROM Employees WHERE Id = @Id;
+END;
+
+
+Benefits - faster execution, reusability, and better security.
+
+38?? What are Cursors and Aggregate Functions?
+
+Answer:
+
+Cursors allow row-by-row processing of query results.
+Used rarely, when set-based operations aren't possible.
+
+Aggregate functions perform calculations on sets - SUM, AVG, COUNT, MAX, MIN.
+
+39?? Difference between DELETE vs TRUNCATE vs DROP
+Command	Function	Can Rollback?
+DELETE	Removes selected rows	Yes
+TRUNCATE	Removes all rows but keeps table	No
+DROP	Deletes table structure	No
+40?? What is Normalization and Denormalization?
+
+Answer:
+
+Normalization: Organizing data to reduce redundancy (1NF ? 3NF).
+
+Denormalization: Combining tables to improve read performance.
+Example: Normalize for OLTP, denormalize for reporting.
+
+41?? How to find the Nth highest salary in SQL?
+SELECT DISTINCT Salary
+FROM Employees e1
+WHERE N-1 = (
+    SELECT COUNT(DISTINCT e2.Salary)
+    FROM Employees e2
+    WHERE e2.Salary > e1.Salary
+);
+
+
+Or simpler (for 2nd highest):
+
+SELECT MAX(Salary)
+FROM Employees
+WHERE Salary < (SELECT MAX(Salary) FROM Employees);
+
+42?? Query to get the Total Marks of Students
+SELECT StudentId, SUM(Marks) AS TotalMarks
+FROM StudentMarks
+GROUP BY StudentId;
+
+43?? Query to find Second-Highest Salary
+SELECT MAX(Salary) 
+FROM Employees
+WHERE Salary < (SELECT MAX(Salary) FROM Employees);
+
+44?? Query to get Employees from a Particular Department
+SELECT * 
+FROM Employees 
+WHERE DepartmentId = 3;
+
+45?? Query to Count Employees in Each Department
+SELECT DepartmentId, COUNT(*) AS TotalEmployees
+FROM Employees
+GROUP BY DepartmentId;
+
+46?? Query for Left Join in EF Core
+var result = from e in _context.Employees
+             join d in _context.Departments
+             on e.DepartmentId equals d.Id into deptGroup
+             from d in deptGroup.DefaultIfEmpty()
+             select new { e.Name, Department = d.DepartmentName };
+
+47?? What is a Temporary Table in SQL, and where is it used?
+
+Answer:
+Temporary tables store intermediate results temporarily.
+
+CREATE TABLE #TempEmp (Id INT, Name NVARCHAR(50));
+
+
+They are dropped automatically when the session ends.
+Used for complex joins or data transformations.
+
+48?? Clustered vs Non-Clustered Index
+Type	Description	Example
+Clustered	Physically reorders data; only one per table.	Primary Key
+Non-Clustered	Logical pointer to data; many allowed.	Secondary indexes
+
+Example:
+
+CREATE CLUSTERED INDEX idx_emp_id ON Employees(Id);
+CREATE NONCLUSTERED INDEX idx_emp_name ON Employees(Name);
+
+49?? Difference between SQL and NoSQL Databases
+SQL	NoSQL
+Relational (Tables)	Non-relational (Documents, Key-Value, Graph)
+Fixed schema	Dynamic schema
+Uses SQL	Uses JSON/XML
+Example: SQL Server	Example: MongoDB, Cosmos DB
+50?? Types of Functions in SQL
+
+Answer:
+
+Scalar Functions - return a single value (LEN, GETDATE).
+
+Aggregate Functions - SUM, AVG, COUNT.
+
+Table-Valued Functions - return a table result.
+
+System Functions - built-in functions like ISNULL, CONVERT.
+
+User-Defined Functions (UDF) - custom logic by user.
+
+51?? Candidate Key vs Composite Key in SQL
+Key	Description
+Candidate Key	Column(s) that can uniquely identify a record.
+Composite Key	Combination of two or more columns used as a key.
+
+Example: (StudentId, CourseId) ? Composite Key.
+
+52?? Composite Key vs Primary Key vs Unique Key
+Key Type	Description
+Primary Key	Uniquely identifies each record, no NULLs.
+Composite Key	Multiple columns together act as Primary Key.
+Unique Key	Allows NULLs, ensures uniqueness.
+
+? Bonus Tip (for impact):
+
+53?? Angular vs AngularJS
+
+Answer:
+AngularJS is the older version (based on JavaScript), while Angular (2+ versions) is a complete TypeScript-based framework.
+
+Feature	AngularJS	Angular
+Language	JavaScript	TypeScript
+Architecture	MVC	Component-based
+DOM	Real DOM	Virtual DOM
+Performance	Slower	Faster
+Mobile Support	No	Yes
+
+I personally work with Angular 15, which provides strong typing, modular design, and faster compilation using AOT.
+
+54?? What is a Component and Nested Component?
+
+A Component is the building block of an Angular app. It contains the HTML (view), CSS (style), and TypeScript (logic).
+
+Example:
+
+@Component({
+  selector: 'app-employee',
+  templateUrl: './employee.component.html'
+})
+export class EmployeeComponent {}
+
+
+A Nested Component is a component inside another - like a DepartmentComponent containing multiple EmployeeComponents.
+
+Used to build modular and reusable UI.
+
+55?? What are Lifecycle Hooks in Angular?
+
+Lifecycle hooks allow us to act at different phases of a component's life.
+Common hooks include:
+
+ngOnInit() - initialization logic (API calls).
+
+ngOnChanges() - when input properties change.
+
+ngOnDestroy() - cleanup (unsubscribe observables).
+
+ngAfterViewInit() - after view is initialized.
+
+Example: I use ngOnInit() to call backend APIs via services.
+
+56?? Explain Data Binding and Directives.
+
+Data Binding connects data between the component and the template.
+4 types:
+
+Interpolation: {{ title }}
+
+Property Binding: [src]="imageUrl"
+
+Event Binding: (click)="onClick()"
+
+Two-Way Binding: [(ngModel)]="name"
+
+Directives:
+
+Structural: *ngIf, *ngFor
+
+Attribute: [ngClass], [ngStyle]
+
+Custom: Built using @Directive() decorator.
+
+57?? What are Pipes and Custom Pipes?
+
+Pipes transform data in the template.
+Example:
+{{ name | uppercase }} ? converts to uppercase.
+
+Custom Pipe:
+
+@Pipe({ name: 'greet' })
+export class GreetPipe implements PipeTransform {
+  transform(value: string) {
+    return 'Hello ' + value;
+  }
+}
+
+58?? Template-driven vs Reactive Forms
+Feature	Template-driven	Reactive
+Based on	Template	Component (model)
+FormControl creation	HTML-based	In TypeScript
+Validation	Directives	Code-based
+Best for	Simple forms	Complex, dynamic forms
+59?? What are Auth Guards and Route Guards?
+
+Auth Guards protect routes from unauthorized access.
+
+Example:
+
+canActivate(): boolean {
+  return this.authService.isLoggedIn();
+}
+
+
+Guards include:
+
+CanActivate - restrict access
+
+CanDeactivate - confirm before leaving
+
+CanLoad - for lazy-loaded modules
+
+60?? Angular Architecture and SPA
+
+Angular is based on Component-based Architecture and works as a Single Page Application (SPA).
+
+SPA means the page doesn't reload - only components update dynamically.
+
+Key building blocks:
+
+Modules
+
+Components
+
+Templates
+
+Services
+
+Routing
+
+The Router handles navigation between views without full page reload.
+
+61?? What is Lazy Loading in Angular?
+
+Lazy Loading loads modules only when they are needed.
+
+Example:
+
+{ path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) }
+
+
+It improves performance and reduces initial bundle size.
+
+62?? What are Services and Dependency Injection?
+
+Services contain reusable business logic or API calls.
+
+Dependency Injection (DI) automatically provides these services wherever needed.
+
+Example:
+
+@Injectable({ providedIn: 'root' })
+export class EmployeeService {
+  getEmployees() { ... }
+}
+
+
+Then injected using the constructor in components.
+
+63?? What is RxJS? What are Observables and Async Pipe?
+
+RxJS (Reactive Extensions for JavaScript) helps manage async data streams.
+
+Observable: represents data over time (like API response or user input).
+
+Async Pipe: auto-subscribes to observables in templates.
+
+<div *ngIf="employee$ | async as employee">{{ employee.name }}</div>
+
+64?? Observable vs Promise
+Feature	Observable	Promise
+Values	Multiple	Single
+Cancelable	Yes	No
+Operators	Supports (map, filter)	No
+Execution	Lazy	Eager
+65?? @Input vs @Output
+
+@Input() ? used to pass data from parent to child.
+
+@Output() ? used to send data from child to parent via EventEmitter.
+
+Example:
+
+@Input() name: string;
+@Output() clicked = new EventEmitter<string>();
+
+66?? @ViewChild vs @ViewChildren
+
+@ViewChild ? gets reference to a single child element or component.
+
+@ViewChildren ? gets multiple child elements.
+
+@ViewChild('inputRef') input: ElementRef;
+@ViewChildren(ChildComp) children: QueryList<ChildComp>;
+
+67?? What is AOT (Ahead-of-Time) Compilation?
+
+AOT compiles TypeScript and templates at build time, not runtime.
+It reduces bundle size and improves app startup speed.
+
+Example:
+ng build --aot
+
+68?? How do you handle API calls in Angular?
+
+Using HttpClientModule and services.
+
+this.http.get<Employee[]>('api/employees')
+  .subscribe(res => this.employees = res);
+
+
+I handle all APIs through centralized services with error handling and interceptors.
+
+69?? How do you Pass Token in Angular (using Interceptor)?
+
+I use an HTTP Interceptor to attach JWT token automatically.
+
+intercept(req: HttpRequest<any>, next: HttpHandler) {
+  const token = this.authService.getToken();
+  const cloned = req.clone({ setHeaders: { Authorization: `Bearer ${token}` }});
+  return next.handle(cloned);
+}
+
+70?? How do you handle Errors in Angular?
+
+Using:
+
+HttpInterceptor for global HTTP errors
+
+try-catch in service
+
+Global Error Handler via ErrorHandler class
+
+Example:
+
+catchError(err => {
+  console.error(err);
+  return throwError(() => new Error('Something went wrong!'));
+});
+
+71?? What are Angular Guards?
+
+Guards control navigation.
+
+CanActivate: restrict access
+
+CanDeactivate: prevent leaving unsaved form
+
+CanLoad: control module loading
+
+Example: Protect dashboard from unauthorized users.
+
+72?? What is NgZone in Angular?
+
+NgZone detects changes and updates the UI automatically when async operations occur.
+
+Example: Running heavy tasks outside Angular's zone for performance optimization.
+
+73?? switchMap vs mergeMap vs concatMap vs exhaustMap
+Operator	Behavior
+switchMap	Cancels previous request (used for search box).
+mergeMap	Runs all in parallel.
+concatMap	Runs sequentially.
+exhaustMap	Ignores new until current completes.
+74?? Resolver vs Guard
+
+Resolver: Fetches data before navigation.
+
+Guard: Controls whether navigation is allowed.
+
+Example: Resolver loads employee data before route activation.
+
+75?? How do you ensure State Management in Angular?
+
+For small apps ? BehaviorSubject or Service-based state.
+For large apps ? use libraries like NgRx, Akita, or NGXS.
+
+Example: NgRx uses Store, Actions, and Reducers for predictable state.
+
+76?? How do you share Data between Components?
+
+@Input / @Output
+
+Shared Service with Subject/BehaviorSubject
+
+Router parameters
+
+LocalStorage / SessionStorage
+
+77?? What is Angular Universal?
+
+Angular Universal enables Server-Side Rendering (SSR).
+It renders the first page on the server ? improves SEO and initial load time.
+
+Example: ng add @nguniversal/express-engine
+
+78?? How can you optimize Angular application performance?
+
+Enable AOT compilation
+
+Use Lazy Loading
+
+Implement ChangeDetectionStrategy.OnPush
+
+Optimize images & assets
+
+Use trackBy in ngFor
+
+Cache API responses
+
+Minimize bundle with ng build --prod
+
+79?? Libraries used to manage token expiry
+
+angular-oauth2-oidc
+
+ngx-auth-token
+
+jwt-decode
+
+These libraries help decode tokens, check expiry, and auto-refresh.
+
+80?? What is an Injector in Angular?
+
+The Injector is Angular's dependency injection container - it creates and provides service instances to components.
+
+Example: When you declare a service providedIn: 'root', Angular's root injector creates a single instance shared across the app.
+
+
+96?? Explain the benefits of RESTful Services.
+
+Answer:
+RESTful services provide a lightweight, scalable, and platform-independent way of communication between client and server.
+
+The main benefits are:
+
+Statelessness: Each request is independent, which improves scalability.
+
+Uniform Interface: Uses standard HTTP methods like GET, POST, PUT, DELETE.
+
+Flexibility: Clients (Angular, mobile, etc.) can consume APIs easily in JSON format.
+
+Caching: Responses can be cached to improve performance.
+
+For example, in one of my .NET Core projects, I used REST APIs to connect Angular UI with backend microservices - the APIs were stateless and easily consumable by other systems too.
+
+97?? What are the principles of RESTful APIs?
+
+Answer:
+The key REST principles are:
+
+Stateless: Each API call should contain all the necessary information - no session stored on the server.
+
+Client-Server Separation: The frontend (client) and backend (server) are independent.
+
+Uniform Interface: Use clear resource names and standard HTTP verbs - like GET /api/employees.
+
+Cacheable: Responses should be cacheable when possible.
+
+Layered System: APIs can be routed through multiple layers (like load balancers, gateways) without affecting functionality.
+
+Representation: Data is usually represented in JSON or XML formats.
+
+In short, REST promotes simplicity, scalability, and flexibility - ideal for modern web applications.
+
+98?? Explain Token Expiry and its importance in security.
+
+Answer:
+Token expiry defines how long a token remains valid before it needs to be refreshed or reissued.
+
+It's critical for security because if a token gets leaked or stolen, it limits the time an attacker can misuse it.
+
+For example, in JWT-based authentication, we often set exp (expiry claim) to something like 15 minutes for access tokens and 7 days for refresh tokens.
+
+This ensures short-lived access and balances security with usability.
+
+In my projects, I configure this in .NET Core JWT setup like:
+
+options.TokenValidationParameters = new TokenValidationParameters
+{
+    ValidateLifetime = true,
+    ClockSkew = TimeSpan.Zero
+};
+
+
+This forces tokens to expire exactly on time for better security.
+
+99?? Limitations / Disadvantages of JWT Token
+
+Answer:
+While JWT is powerful, it does have a few limitations:
+
+Token Revocation: Once a token is issued, it's hard to invalidate before expiry unless you maintain a blacklist.
+
+Larger Size: JWT includes a payload and signature, so it's bigger than session tokens.
+
+No Built-in Confidentiality: JWTs are only encoded, not encrypted, so sensitive data shouldn't be stored inside.
+
+Expiry Management: Short expiry increases login frequency; long expiry reduces security.
+
+In real projects, I balance this by using short-lived access tokens and refresh tokens to renew authentication securely.
+
+100?? Explain SOLID Principles with examples
+
+Answer:
+SOLID is a set of five object-oriented design principles that make code more maintainable, flexible, and scalable.
+
+S - Single Responsibility Principle (SRP):
+Each class should have only one reason to change.
+Example: A UserService should only handle user logic, not logging.
+
+O - Open/Closed Principle:
+Classes should be open for extension but closed for modification.
+Example: Using interfaces or inheritance to add new behavior without altering existing code.
+
+L - Liskov Substitution Principle:
+Derived classes should be substitutable for their base classes.
+Example: If Bird has a Fly() method, Penguin shouldn't inherit it since it can't fly.
+
+I - Interface Segregation Principle:
+Don't force a class to implement interfaces it doesn't use.
+Example: Split a large IEmployee interface into smaller ones like IWorkable and IReportable.
+
+D - Dependency Inversion Principle:
+Depend on abstractions, not concrete classes.
+Example: Instead of creating an object directly, inject it through the constructor using an interface - which supports Dependency Injection in .NET Core.
+
+I always follow SOLID in my .NET Core projects to make code cleaner, testable, and easily maintainable.

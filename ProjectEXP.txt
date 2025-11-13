@@ -1,0 +1,18 @@
+The main project I worked on is called the Financial Statement Review, or FSR Workflow. It’s a web-based application developed for a US-based finance and consulting firm, and it’s mainly used to manage and automate the financial report review process for different client engagements.
+
+The main goal of the project was to replace a lot of manual steps that teams used to do through emails and spreadsheets, and instead bring everything into one structured and automated workflow system.
+
+The workflow includes one main process and two parallel sub-workflows — one for Financial Report Processing and another for Engagement Quality Review.
+These two workflows run simultaneously, so multiple users can work in parallel. To support this, we created a tab-based form where each tab represents a section of the workflow, and users have controlled access — for example, if someone is working on the financial report side, their tab is editable while the other tabs remain read-only to avoid data conflicts.
+
+I was mainly responsible for developing RESTful APIs for each workflow step — like GET, POST, PATCH, and DELETE operations.
+I also implemented FluentValidation for model-level validation to make sure data integrity is maintained during workflow transitions.
+
+Another interesting part of this project was integration with CaseWare and CaseView tools, which automatically generate PDF and RTF deliverables and upload them into the CaseWare document manager.
+We also integrated with another workflow called Assurance Consultation, which allowed users to view related consultation details directly inside the FSR form.
+
+From the backend side, I also worked on Azure Logic Apps to automate certain workflow creation processes and to handle background activities like document generation and API integrations.
+
+Overall, my role involved API development, database design using SQL Server, Logic App workflows, and client interaction for requirement gathering, issue resolution, and enhancements.
+
+This project really helped me understand workflow-driven application design, parallel processing, and how to build scalable backend systems integrated with external tools.
